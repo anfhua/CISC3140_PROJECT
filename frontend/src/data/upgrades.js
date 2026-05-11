@@ -2,7 +2,7 @@ export const upgrades = [
   {
     id: "luck",
     name: "Luck Upgrade",
-    description: "Improves chance of better weapons.",
+    description: "Improves chance of better weapons and critical hit level.",
     baseCost: 50,
   },
   {

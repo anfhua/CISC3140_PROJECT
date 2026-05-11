@@ -1,12 +1,12 @@
 import { useState } from "react";
 
 import { weapons } from "./data/weapons";
-import { enemies } from "./data/enemies";
 
 import { spinWeapon } from "./logic/spinWeapon";
 import { attackEnemy } from "./logic/combat";
 import { calculateReward, getUpgradeCost } from "./logic/economy";
 import { getWeaponSellValue } from "./logic/weaponValue";
+import { getFirstEnemy, getNextEnemy } from "./logic/dungeon";
 
 import PlayerStats from "./components/PlayerStats";
 import EnemyPanel from "./components/EnemyPanel";
@@ -32,12 +32,9 @@ function App() {
   const [lastSpunWeapon, setLastSpunWeapon] = useState(null);
   const [isSpinning, setIsSpinning] = useState(false);
 
+  const [dungeonLevel, setDungeonLevel] = useState(1);
   const [enemyIndex, setEnemyIndex] = useState(0);
-
-  const [currentEnemy, setCurrentEnemy] = useState({
-    ...enemies[0],
-    currentHealth: enemies[0].health,
-  });
+  const [currentEnemy, setCurrentEnemy] = useState(getFirstEnemy(1));
 
   const [upgrades, setUpgrades] = useState({
     luck: 0,
@@ -80,30 +77,48 @@ function App() {
   }
 
   function handleAttack() {
-    const result = attackEnemy(currentEnemy, weapon, upgrades.damage);
+    const result = attackEnemy(
+      currentEnemy,
+      weapon,
+      upgrades.damage,
+      upgrades.luck
+    );
 
     if (result.enemyDefeated) {
       const reward = calculateReward(currentEnemy, upgrades.coins);
 
       setCoins((prevCoins) => prevCoins + reward);
 
-      addLog(`You defeated ${currentEnemy.name} and earned $${reward}!`);
+      if (result.isCriticalHit) {
+        addLog(
+          `CRITICAL HIT! You defeated ${currentEnemy.name} and earned $${reward}!`
+        );
+      } else {
+        addLog(`You defeated ${currentEnemy.name} and earned $${reward}!`);
+      }
 
-      const nextEnemyIndex = Math.min(enemyIndex + 1, enemies.length - 1);
-      const nextEnemy = enemies[nextEnemyIndex];
+      const nextStage = getNextEnemy(enemyIndex, dungeonLevel);
 
-      setEnemyIndex(nextEnemyIndex);
-      setCurrentEnemy({
-        ...nextEnemy,
-        currentHealth: nextEnemy.health,
-      });
+      setEnemyIndex(nextStage.nextEnemyIndex);
+      setDungeonLevel(nextStage.nextDungeonLevel);
+      setCurrentEnemy(nextStage.enemy);
 
-      if (nextEnemyIndex === enemies.length - 1) {
-        addLog("The Dungeon Dragon awaits...");
+      if (nextStage.advancedDungeon) {
+        addLog(`You cleared Dungeon Level ${dungeonLevel}!`);
+        addLog(`Entering Dungeon Level ${nextStage.nextDungeonLevel}.`);
+      } else if (nextStage.enemy.isBoss) {
+        addLog(`Boss stage reached: ${nextStage.enemy.name}!`);
       }
     } else {
       setCurrentEnemy(result.enemy);
-      addLog(`You dealt ${result.damageDealt} damage to ${currentEnemy.name}.`);
+
+      if (result.isCriticalHit) {
+        addLog(
+          `CRITICAL HIT! You dealt ${result.damageDealt} damage to ${currentEnemy.name}.`
+        );
+      } else {
+        addLog(`You dealt ${result.damageDealt} damage to ${currentEnemy.name}.`);
+      }
     }
   }
 
@@ -158,12 +173,10 @@ function App() {
     setInventory([newStarterWeapon]);
     setLastSpunWeapon(null);
     setIsSpinning(false);
-    setEnemyIndex(0);
 
-    setCurrentEnemy({
-      ...enemies[0],
-      currentHealth: enemies[0].health,
-    });
+    setDungeonLevel(1);
+    setEnemyIndex(0);
+    setCurrentEnemy(getFirstEnemy(1));
 
     setUpgrades({
       luck: 0,
@@ -191,7 +204,12 @@ function App() {
           <h2 className="dashboard-title">Player Dashboard</h2>
 
           <div className="player-dashboard-grid">
-            <PlayerStats coins={coins} weapon={weapon} upgrades={upgrades} />
+            <PlayerStats
+              coins={coins}
+              weapon={weapon}
+              upgrades={upgrades}
+              dungeonLevel={dungeonLevel}
+            />
 
             <UpgradeShop
               coins={coins}
