@@ -9,7 +9,7 @@ function EnemyPanel({ enemy, onAttack }) {
 
       <div className="character-area enemy-area">
         <div className="enemy-avatar">
-        <img src={enemy.image} alt={enemy.name} className="sprite-image" />
+          <img src={enemy.image} alt={enemy.name} className="sprite-image" />
       </div>
 
         <div>

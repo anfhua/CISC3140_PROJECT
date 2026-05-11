@@ -1,10 +1,12 @@
+const BASE_URL = import.meta.env.BASE_URL;
+
 export const enemyTemplates = [
   {
     id: 1,
-    name: "Unemployeed Cat",
+    name: "Unemployed Cat",
     baseHealth: 30,
     baseReward: 15,
-    image: "/images/hobo.jpg",
+    image: `${BASE_URL}images/hobo.png`,
     isBoss: false,
   },
   {
@@ -12,7 +14,7 @@ export const enemyTemplates = [
     name: "Productive Cat",
     baseHealth: 70,
     baseReward: 35,
-    image: "/images/dumb.jpg",
+    image: `${BASE_URL}images/dum.png`,
     isBoss: false,
   },
   {
@@ -20,7 +22,7 @@ export const enemyTemplates = [
     name: "Clown Cat",
     baseHealth: 140,
     baseReward: 75,
-    image: "/images/clown.jpg",
+    image: `${BASE_URL}images/clown.png`,
     isBoss: false,
   },
   {
@@ -28,7 +30,7 @@ export const enemyTemplates = [
     name: "The Cat Boss",
     baseHealth: 350,
     baseReward: 200,
-    image: "/images/boss.jpg",
+    image: `${BASE_URL}images/boss.png`,
     isBoss: true,
   },
 ];

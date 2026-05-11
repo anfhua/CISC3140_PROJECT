@@ -12,8 +12,12 @@ function PlayerStats({ coins, weapon, upgrades, dungeonLevel }) {
 
       <div className="character-area">
         <div className="player-avatar">
-          <img src="/images/profilecat.jpg" alt="Player" className="sprite-image" />
-        </div>
+        <img
+          src={`${import.meta.env.BASE_URL}images/profile.png`}
+          alt="Player"
+          className="sprite-image"
+        />
+      </div>
 
         <div>
           <h3>Dungeon Adventurer</h3>
