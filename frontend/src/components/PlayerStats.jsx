@@ -11,7 +11,9 @@ function PlayerStats({ coins, weapon, upgrades, dungeonLevel }) {
       <h2>Player</h2>
 
       <div className="character-area">
-        <div className="player-avatar">🧙‍♂️</div>
+        <div className="player-avatar">
+          <img src="/images/profilecat.jpg" alt="Player" className="sprite-image" />
+        </div>
 
         <div>
           <h3>Dungeon Adventurer</h3>

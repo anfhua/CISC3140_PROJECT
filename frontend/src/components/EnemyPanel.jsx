@@ -8,11 +8,13 @@ function EnemyPanel({ enemy, onAttack }) {
       <div className="enemy-level-badge">Dungeon Level {enemy.dungeonLevel}</div>
 
       <div className="character-area enemy-area">
-        <div className="enemy-avatar">{enemy.emoji}</div>
+        <div className="enemy-avatar">
+        <img src={enemy.image} alt={enemy.name} className="sprite-image" />
+      </div>
 
         <div>
           <h3>{enemy.name}</h3>
-          <p>{enemy.isBoss ? "Boss Enemy" : "Normal Enemy"}</p>
+          <p>{enemy.isBoss ? "Inspection Day" : "Normal Day"}</p>
           <p>Reward: ${enemy.reward}</p>
         </div>
       </div>
