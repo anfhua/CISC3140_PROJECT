@@ -2,23 +2,36 @@ import { useState } from "react";
 
 import { weapons } from "./data/weapons";
 import { enemies } from "./data/enemies";
-import { upgrades as upgradeData } from "./data/upgrades";
 
 import { spinWeapon } from "./logic/spinWeapon";
 import { attackEnemy } from "./logic/combat";
 import { calculateReward, getUpgradeCost } from "./logic/economy";
+import { getWeaponSellValue } from "./logic/weaponValue";
 
 import PlayerStats from "./components/PlayerStats";
-import WeaponSpin from "./components/WeaponSpin";
 import EnemyPanel from "./components/EnemyPanel";
 import UpgradeShop from "./components/UpgradeShop";
 import GameLog from "./components/GameLog";
+import WeaponSection from "./components/WeaponSection";
+
+function createInventoryWeapon(weapon) {
+  return {
+    ...weapon,
+    inventoryId: crypto.randomUUID(),
+  };
+}
 
 function App() {
   const spinCost = 25;
 
+  const starterWeapon = createInventoryWeapon(weapons[0]);
+
   const [coins, setCoins] = useState(100);
-  const [weapon, setWeapon] = useState(weapons[0]);
+  const [weapon, setWeapon] = useState(starterWeapon);
+  const [inventory, setInventory] = useState([starterWeapon]);
+  const [lastSpunWeapon, setLastSpunWeapon] = useState(null);
+  const [isSpinning, setIsSpinning] = useState(false);
+
   const [enemyIndex, setEnemyIndex] = useState(0);
 
   const [currentEnemy, setCurrentEnemy] = useState({
@@ -33,26 +46,37 @@ function App() {
   });
 
   const [logs, setLogs] = useState([
-    "Welcome to Dungeon Spinner!",
-    "Defeat enemies, earn coins, spin weapons, and upgrade your power.",
+    "Welcome to Dungeon RNG!",
+    "Defeat enemies, earn coins, roll weapons, and upgrade your power.",
   ]);
 
   function addLog(message) {
-    setLogs((prevLogs) => [message, ...prevLogs].slice(0, 8));
+    setLogs((prevLogs) => [message, ...prevLogs].slice(0, 12));
   }
 
   function handleSpin() {
-    if (coins < spinCost) {
-      addLog("Not enough coins to spin.");
+    if (coins < spinCost || isSpinning) {
+      addLog("Not enough coins to roll.");
       return;
     }
 
-    const newWeapon = spinWeapon(upgrades.luck);
-
     setCoins((prevCoins) => prevCoins - spinCost);
-    setWeapon(newWeapon);
+    setIsSpinning(true);
+    setLastSpunWeapon(null);
 
-    addLog(`You spun and received: ${newWeapon.name} (${newWeapon.rarity})`);
+    setTimeout(() => {
+      const rolledWeapon = spinWeapon(upgrades.luck);
+      const inventoryWeapon = createInventoryWeapon(rolledWeapon);
+
+      setWeapon(inventoryWeapon);
+      setInventory((prevInventory) => [inventoryWeapon, ...prevInventory]);
+      setLastSpunWeapon(inventoryWeapon);
+      setIsSpinning(false);
+
+      addLog(
+        `You rolled ${inventoryWeapon.name} (${inventoryWeapon.rarity}) and equipped it.`
+      );
+    }, 1000);
   }
 
   function handleAttack() {
@@ -63,9 +87,7 @@ function App() {
 
       setCoins((prevCoins) => prevCoins + reward);
 
-      addLog(
-        `You defeated ${currentEnemy.name} and earned $${reward}!`
-      );
+      addLog(`You defeated ${currentEnemy.name} and earned $${reward}!`);
 
       const nextEnemyIndex = Math.min(enemyIndex + 1, enemies.length - 1);
       const nextEnemy = enemies[nextEnemyIndex];
@@ -81,9 +103,7 @@ function App() {
       }
     } else {
       setCurrentEnemy(result.enemy);
-      addLog(
-        `You dealt ${result.damageDealt} damage to ${currentEnemy.name}.`
-      );
+      addLog(`You dealt ${result.damageDealt} damage to ${currentEnemy.name}.`);
     }
   }
 
@@ -106,52 +126,96 @@ function App() {
     addLog(`Purchased ${upgrade.name}.`);
   }
 
+  function handleEquipWeapon(selectedWeapon) {
+    setWeapon(selectedWeapon);
+    addLog(`Equipped ${selectedWeapon.name}.`);
+  }
+
+  function handleSellWeapon(selectedWeapon) {
+    if (selectedWeapon.inventoryId === weapon.inventoryId) {
+      addLog("You cannot sell your equipped weapon.");
+      return;
+    }
+
+    const sellValue = getWeaponSellValue(selectedWeapon);
+
+    setInventory((prevInventory) =>
+      prevInventory.filter(
+        (item) => item.inventoryId !== selectedWeapon.inventoryId
+      )
+    );
+
+    setCoins((prevCoins) => prevCoins + sellValue);
+
+    addLog(`Sold ${selectedWeapon.name} for $${sellValue}.`);
+  }
+
   function handleReset() {
+    const newStarterWeapon = createInventoryWeapon(weapons[0]);
+
     setCoins(100);
-    setWeapon(weapons[0]);
+    setWeapon(newStarterWeapon);
+    setInventory([newStarterWeapon]);
+    setLastSpunWeapon(null);
+    setIsSpinning(false);
     setEnemyIndex(0);
+
     setCurrentEnemy({
       ...enemies[0],
       currentHealth: enemies[0].health,
     });
+
     setUpgrades({
       luck: 0,
       damage: 0,
       coins: 0,
     });
+
     setLogs(["Game restarted."]);
   }
 
   return (
     <main className="app">
       <header className="game-header">
-        <h1>Dungeon Spinner</h1>
-        <p>Spin weapons. Defeat enemies. Upgrade your luck.</p>
+        <h1>Dungeon RNG</h1>
+        <p>Roll for weapons. Defeat enemies. Upgrade your luck.</p>
         <button onClick={handleReset}>Reset Game</button>
       </header>
 
-      <section className="game-grid">
-        <PlayerStats
-          coins={coins}
-          weapon={weapon}
-          upgrades={upgrades}
-        />
-
+      <section className="enemy-top-section">
         <EnemyPanel enemy={currentEnemy} onAttack={handleAttack} />
+      </section>
 
-        <WeaponSpin
-          coins={coins}
-          spinCost={spinCost}
-          onSpin={handleSpin}
-        />
+      <section className="game-layout">
+        <div className="player-dashboard">
+          <h2 className="dashboard-title">Player Dashboard</h2>
 
-        <UpgradeShop
-          coins={coins}
-          upgrades={upgrades}
-          onBuyUpgrade={handleBuyUpgrade}
-        />
+          <div className="player-dashboard-grid">
+            <PlayerStats coins={coins} weapon={weapon} upgrades={upgrades} />
 
-        <GameLog logs={logs} />
+            <UpgradeShop
+              coins={coins}
+              upgrades={upgrades}
+              onBuyUpgrade={handleBuyUpgrade}
+            />
+
+            <WeaponSection
+              coins={coins}
+              spinCost={spinCost}
+              onSpin={handleSpin}
+              isSpinning={isSpinning}
+              lastSpunWeapon={lastSpunWeapon}
+              inventory={inventory}
+              currentWeapon={weapon}
+              onEquipWeapon={handleEquipWeapon}
+              onSellWeapon={handleSellWeapon}
+            />
+          </div>
+        </div>
+
+        <aside className="log-sidebar">
+          <GameLog logs={logs} />
+        </aside>
       </section>
     </main>
   );

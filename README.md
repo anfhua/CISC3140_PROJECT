@@ -31,10 +31,7 @@ The game is intentionally simple.
 - Modular React components
 - Separated frontend and backend folders
 
-
-================================================================
-How to Run Locally
-
+## How to Run Locally
 You need to run the frontend and backend in separate terminals.
 
 1. Clone or open the project
@@ -42,31 +39,35 @@ You need to run the frontend and backend in separate terminals.
 
 Open a terminal and run:
 
+```bash
 cd backend
 npm install
 npm run dev
+```
 
 The backend should run at:
-
 http://localhost:3000
 
 You can test it by visiting:
-
 http://localhost:3000/api/health
 
+```bash
 Expected response:
-
 {
   "status": "ok",
   "message": "Backend connected successfully."
 }
+```
+
 3. Run the frontend
 
 Open a second terminal and run:
 
+```bash
 cd frontend
 npm install
 npm run dev
+```
 
 The frontend should run at:
 http://localhost:5173
