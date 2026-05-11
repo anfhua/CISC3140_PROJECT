@@ -32,6 +32,6 @@ export const weapons = [
     name: "Dragon Slayer",
     rarity: "Legendary",
     damage: 90,
-    chance: 1,
+    chance: 100,
   },
 ];

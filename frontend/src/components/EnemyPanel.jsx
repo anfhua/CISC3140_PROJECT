@@ -2,10 +2,17 @@ function EnemyPanel({ enemy, onAttack }) {
   const healthPercent = (enemy.currentHealth / enemy.health) * 100;
 
   return (
-    <div className="card">
-      <h2>Enemy</h2>
+    <div className="card enemy-card">
+      <h2>Current Enemy</h2>
 
-      <h3>{enemy.name}</h3>
+      <div className="character-area enemy-area">
+        <div className="enemy-avatar">👹</div>
+
+        <div>
+          <h3>{enemy.name}</h3>
+          <p>Reward: ${enemy.reward}</p>
+        </div>
+      </div>
 
       <p>
         Health: {enemy.currentHealth} / {enemy.health}
@@ -18,9 +25,7 @@ function EnemyPanel({ enemy, onAttack }) {
         ></div>
       </div>
 
-      <p>Reward: ${enemy.reward}</p>
-
-      <button onClick={onAttack}>Attack</button>
+      <button onClick={onAttack}>Attack Enemy</button>
     </div>
   );
 }

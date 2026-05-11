@@ -43,12 +43,51 @@ button:disabled {
   margin-bottom: 8px;
 }
 
-.game-grid {
+.enemy-top-section {
+  max-width: 1300px;
+  margin: 0 auto 20px;
+}
+
+.enemy-top-section .card {
+  border-color: #7f1d1d;
+  background: linear-gradient(135deg, #1f2937, #111827);
+}
+
+.game-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 20px;
+  max-width: 1300px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.player-dashboard {
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.dashboard-title {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #c4b5fd;
+}
+
+.player-dashboard-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(280px, 1fr));
   gap: 20px;
-  max-width: 1100px;
-  margin: 0 auto;
+}
+
+.weapon-section {
+  grid-column: span 2;
+}
+
+.log-sidebar {
+  position: sticky;
+  top: 20px;
 }
 
 .card {
@@ -62,6 +101,44 @@ button:disabled {
 .card h2 {
   margin-top: 0;
   color: #c4b5fd;
+}
+
+.character-area {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.player-avatar,
+.enemy-avatar {
+  width: 70px;
+  height: 70px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 42px;
+  background: #374151;
+}
+
+.enemy-area {
+  border-color: #7f1d1d;
+}
+
+.weapon-card {
+  border-radius: 12px;
+  padding: 14px;
+  margin: 16px 0;
+  border: 2px solid #6b7280;
+  background: #111827;
+}
+
+.weapon-card h3 {
+  margin-top: 0;
 }
 
 .upgrade-item {
@@ -85,6 +162,115 @@ button:disabled {
   transition: width 0.3s ease;
 }
 
+.spin-box {
+  min-height: 130px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background: #111827;
+  border: 2px dashed #4b5563;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  padding: 16px;
+  font-size: 20px;
+}
+
+.spin-box.spinning {
+  animation: spinPulse 0.2s infinite alternate;
+  border-color: #a78bfa;
+}
+
+.spin-result {
+  width: 100%;
+  border-radius: 12px;
+  padding: 12px;
+  border: 2px solid #6b7280;
+}
+
+.spin-result h3 {
+  margin-top: 0;
+}
+
+@keyframes spinPulse {
+  from {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+
+  to {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+}
+
+.inventory-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.stat-bonus {
+  color: #86efac;
+  font-size: 14px;
+}
+
+.stats-list p {
+  margin: 8px 0;
+}
+
+.weapon-section {
+  grid-column: span 2;
+}
+
+.weapon-section-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 20px;
+}
+
+.inventory-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sell-button {
+  background: #b91c1c;
+}
+
+.sell-button:hover {
+  background: #991b1b;
+}
+
+.sell-button:disabled {
+  background: #4b5563;
+}
+
+.inventory-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-radius: 12px;
+  padding: 12px;
+  border: 2px solid #6b7280;
+  background: #111827;
+}
+
+.inventory-item h3 {
+  margin: 0 0 6px;
+}
+
+.inventory-item p {
+  margin: 4px 0;
+}
+
+.inventory-item.equipped {
+  outline: 3px solid #facc15;
+}
+
 .log-box {
   max-height: 240px;
   overflow-y: auto;
@@ -96,8 +282,114 @@ button:disabled {
   font-size: 14px;
 }
 
-@media (max-width: 750px) {
-  .game-grid {
+/* Weapon rarity colors */
+.rarity-common {
+  border-color: #9ca3af;
+  box-shadow: 0 0 12px rgba(156, 163, 175, 0.25);
+}
+
+.rarity-common h3,
+.rarity-common p {
+  color: #e5e7eb;
+}
+
+.rarity-uncommon {
+  border-color: #22c55e;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+}
+
+.rarity-uncommon h3 {
+  color: #86efac;
+}
+
+.rarity-rare {
+  border-color: #3b82f6;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.35);
+}
+
+.rarity-rare h3 {
+  color: #93c5fd;
+}
+
+.rarity-epic {
+  border-color: #a855f7;
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.4);
+}
+
+.rarity-epic h3 {
+  color: #d8b4fe;
+}
+
+.rarity-legendary {
+  border-color: #f59e0b;
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.55);
+  background: linear-gradient(135deg, #111827, #451a03);
+}
+
+.rarity-legendary h3 {
+  color: #fcd34d;
+}
+
+.enemy-top-section .character-area {
+  justify-content: center;
+  text-align: center;
+}
+
+.enemy-top-section .enemy-avatar {
+  width: 90px;
+  height: 90px;
+  font-size: 56px;
+}
+
+.enemy-top-section h2 {
+  text-align: center;
+  font-size: 30px;
+}
+
+.enemy-top-section h3 {
+  font-size: 26px;
+  margin-bottom: 6px;
+}
+
+.enemy-top-section button {
+  width: 100%;
+  margin-top: 12px;
+  font-size: 16px;
+  padding: 14px;
+}
+
+@media (max-width: 900px) {
+  .game-layout {
     grid-template-columns: 1fr;
   }
+
+  .player-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .weapon-section {
+    grid-column: span 1;
+  }
+
+  .weapon-section-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .log-sidebar {
+    position: static;
+  }
+
+  .game-header h1 {
+    font-size: 34px;
+  }
+
+  .inventory-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .inventory-actions {
+    flex-direction: row;
+  }
 }
+
