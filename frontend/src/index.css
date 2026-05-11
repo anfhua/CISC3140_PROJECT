@@ -358,6 +358,30 @@ button:disabled {
   padding: 14px;
 }
 
+.enemy-level-badge {
+  display: inline-block;
+  background: #312e81;
+  color: #ddd6fe;
+  border: 1px solid #818cf8;
+  border-radius: 999px;
+  padding: 6px 12px;
+  margin-bottom: 14px;
+  font-weight: bold;
+}
+
+.boss-card {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 24px rgba(245, 158, 11, 0.35);
+}
+
+.boss-card h2 {
+  color: #fcd34d;
+}
+
+.boss-health-fill {
+  background: linear-gradient(90deg, #dc2626, #f59e0b);
+}
+
 @media (max-width: 900px) {
   .game-layout {
     grid-template-columns: 1fr;

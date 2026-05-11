@@ -1,8 +1,10 @@
 import { getRarityClass } from "../utils/rarityStyles";
+import { getCriticalChance } from "../logic/combat";
 
-function PlayerStats({ coins, weapon, upgrades }) {
+function PlayerStats({ coins, weapon, upgrades, dungeonLevel }) {
   const damageBonus = upgrades.damage * 5;
   const totalDamage = weapon.damage + damageBonus;
+  const criticalChance = getCriticalChance(upgrades.luck);
 
   return (
     <div className="card">
@@ -13,6 +15,9 @@ function PlayerStats({ coins, weapon, upgrades }) {
 
         <div>
           <h3>Dungeon Adventurer</h3>
+          <p>
+            <strong>Dungeon Level:</strong> {dungeonLevel}
+          </p>
           <p>
             <strong>Coins:</strong> ${coins}
           </p>
@@ -30,6 +35,10 @@ function PlayerStats({ coins, weapon, upgrades }) {
         <p>
           <strong>Total Damage:</strong> {totalDamage}{" "}
           <span className="stat-bonus">(+{damageBonus} Upgrade Bonus)</span>
+        </p>
+        <p>
+          <strong>Critical Chance:</strong> {criticalChance}%{" "}
+          <span className="stat-bonus">(+{upgrades.luck * 2}% Luck Bonus)</span>
         </p>
       </div>
 
